@@ -1,3 +1,4 @@
 #!/bin/bash
 
-eval "${HOME}/.local/bin/scriptmaker/virtualenv/bin/python3 ${HOME}/.local/bin/scriptmaker/project.py \"${@}\""
+BIN_PATH="${HOME}/.local/bin/_scriptmaker"
+eval "${BIN_PATH}/virtualenv/bin/python3 ${BIN_PATH}/project.py \"${@}\""
