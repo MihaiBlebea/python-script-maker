@@ -7,6 +7,6 @@ if [[ $* == *-u* ]]; then
 else
 	echo "installing the scriptmaker"
 	git clone https://github.com/MihaiBlebea/python-script-maker && \
-	cp -r ./python-script-maker ${HOME}/.local/bin/_scriptmaker && \
+	cp -r ./python-script-maker/ ${HOME}/.local/bin/_scriptmaker/ && \
 	ln -s ${HOME}/.local/bin/_scriptmaker/execute.sh ${HOME}/.local/bin/scriptmaker
 fi
