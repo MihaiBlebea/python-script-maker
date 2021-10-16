@@ -6,9 +6,24 @@
 ```bash
 curl https://raw.githubusercontent.com/MihaiBlebea/python-script-maker/master/installer.sh --output installer.sh --silent && chmod +x ./installer.sh && ./installer.sh
 ```
-- Navigate to specific folder and run ```./install.sh```
-- Run this script with ```scriptmaker <script-name>```
+- To create a new script project, just run this script with 
+```bash
+scriptmaker <script-name>
+```
 
 ### How to uninstall from local?
 
-- Navigate to folder and run command ```./uninstall.sh```
+- Option 1 - with the installer file: 
+```bash
+./installer.sh -u
+```
+
+- Option 2 - download the installer and uninstall in one command:
+```bash
+curl https://raw.githubusercontent.com/MihaiBlebea/python-script-maker/master/installer.sh --output installer.sh --silent && chmod +x ./installer.sh && ./installer.sh -u && rm -rf ./installer.sh
+```
+
+- Option 3 - just run this command:
+```bash
+unlink ${HOME}/.local/bin/scriptmaker && rm -rf ${HOME}/.local/bin/_scriptmaker
+```
