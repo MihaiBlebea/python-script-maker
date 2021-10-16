@@ -1,3 +1,3 @@
 #!/bin/bash
 
-eval "${PWD}/virtualenv/bin/python3 ${PWD}/project.py \"${@}\""
+eval "${HOME}/.local/bin/scriptmaker/virtualenv/bin/python3 ${HOME}/.local/bin/scriptmaker/project.py \"${@}\""
