@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from shutil import copyfile
 from pathlib import Path
 import argparse
@@ -27,6 +29,7 @@ def main():
 	project_name = validate_project_name(project_name)
 
 	create_folder(project_name)
+	create_folder(f"{project_name}/src")
 	copy_file(project_name, "Makefile")
 	copy_file(project_name, ".env")
 	copy_file(project_name, ".env.example")
@@ -51,12 +54,12 @@ def copy_file(project_name, file):
     Copy a file from the current folder to the destination project folder.
     """
 	cur_folder = current_folder()
-	copyfile(f"{cur_folder}/{file}", f"./{project_name}/{file}")
+	copyfile(f"{cur_folder}/templates/{file}", f"./{project_name}/{file}")
 
 
 def create_execute_file(project_name):
 	cur_folder = current_folder()
-	temp = open(f"{cur_folder}/execute.sh", "r")
+	temp = open(f"{cur_folder}/templates/execute.sh", "r")
 	content = temp.read().replace("project", project_name)
 	temp.close()
 
@@ -67,11 +70,11 @@ def create_execute_file(project_name):
 
 def create_script_file(project_name):
 	cur_folder = current_folder()
-	temp = open(f"{cur_folder}/template.py", "r")
+	temp = open(f"{cur_folder}/templates/execute.py", "r")
 	content = temp.read()
 	temp.close()
 
-	f = open(f"{project_name}/{project_name}.py", "w")
+	f = open(f"{project_name}/src/{project_name}.py", "w")
 	f.write(content)
 	f.close()
 
