@@ -1,0 +1,71 @@
+---
+- name: Deploy
+  hosts: all
+  tasks:
+    - name: Clone scraper repo
+      git:
+        repo: https://github.com/MihaiBlebea/content_aggregator.git
+        dest: /home/pi/content_aggregator
+        clone: yes
+        update: yes
+
+    - name: Create the virtual env
+      shell:
+        cmd: make venv-create
+        chdir: /home/pi/content_aggregator
+      register: out
+
+    - debug: var=out.stdout_lines
+
+    - name: Install the dependencies in virtualenv
+      shell:
+        cmd: ./virtualenv/bin/pip3 install -r requirements.txt
+        chdir: /home/pi/content_aggregator
+      register: out
+
+    - debug: var=out.stdout_lines
+
+    - name: Copy env file to remote
+      become: true 
+      copy:
+        src: ~/Projects/Python/content_aggregator/.env
+        dest: /home/pi/content_aggregator/.env
+        owner: pi
+        group: pi        
+        mode: 0644
+
+    - name: Create the rss cronjob
+      cron:
+        name: "content_aggregator: fetch rss links"
+        minute: "0"
+        hour: "8"
+        job: "cd ${HOME}/content_aggregator && ./execute.sh rss >> ${HOME}/content_aggregator.log 2>&1"
+
+    - name: Create the spider cronjob
+      cron:
+        name: "content_aggregator: fetch content"
+        minute: "0"
+        hour: "9"
+        job: "cd ${HOME}/content_aggregator && ./virtualenv/bin/scrapy crawl content -O output.json >> ${HOME}/content_aggregator.log 2>&1"
+    
+    - name: build container image
+      docker_image:
+        name: api:v1.0
+        build:
+            path: /home/pi/content_aggregator
+        state: present
+
+    - name: Create the spash container
+      docker_container:
+        name: api
+        image: api:v1.0
+        volumes:
+            - /home/pi/content_aggregator/store:/app/store
+        state: present
+        detach: true
+        published_ports:
+            - "8085:8085"
+
+    # - name: Create the spash container
+    #   shell:
+    #     cmd: docker run -d -p 8050:8050 --name spash --rm scrapinghub/splash

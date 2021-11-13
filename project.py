@@ -16,14 +16,42 @@ def main():
 	parser.add_argument(
 		"project", 
 		metavar="project", 
-		type=str, 
+		type=str,
 		help="pass in the project name \"\"",
+	)
+
+	parser.add_argument(
+		"-s",
+		dest="scraper",
+		required=False, 
+		default=False,
+		action="store_true",
+		help="is scraper required",
+	)
+
+	parser.add_argument(
+		"-d",
+		dest="database",
+		required=False, 
+		default=False,
+		action="store_true",
+		help="is database required",
+	)
+
+	parser.add_argument(
+		"-a",
+		dest="ansible",
+		required=False, 
+		default=False,
+		action="store_true",
+		help="is ansible required",
 	)
 
 	args = parser.parse_args()
 
 	project_name = args.project
 	if project_name == "":
+		print("project name is required")
 		return None
 
 	project_name = validate_project_name(project_name)
@@ -40,6 +68,19 @@ def main():
 
 	os.system(f"cd ./{project_name} && make venv-create")
 
+	# copy ansible files
+	if args.ansible is True:
+		create_folder(f"{project_name}/ansible")
+		copy_file(project_name, "ansible/deploy.yaml")
+		copy_file(project_name, "ansible/remove.yaml")
+
+	if args.scraper is True:
+		copy_file(project_name, "scrape.py", "src/scrape.py")
+		copy_file(project_name, "spider.py", "src/spider.py")
+		os.system(f"cd ./{project_name} && make venv-activate && make venv-install package=scrapy")
+		os.system(f"cd ./{project_name} && make venv-activate && make venv-install package=scrapy-splash")
+		os.system(f"cd ./{project_name} && make venv-lock")
+
 
 def create_folder(folder_name):
 	Path(f"./{folder_name}").mkdir(parents=True, exist_ok=True)
@@ -49,12 +90,16 @@ def current_folder():
 	return Path(__file__).parent.resolve()
 
 
-def copy_file(project_name, file):
+def copy_file(project_name, file, dest = None):
 	"""
     Copy a file from the current folder to the destination project folder.
     """
 	cur_folder = current_folder()
-	copyfile(f"{cur_folder}/templates/{file}", f"./{project_name}/{file}")
+	if dest is None:
+		copyfile(f"{cur_folder}/templates/{file}", f"./{project_name}/{file}")
+		return
+
+	copyfile(f"{cur_folder}/templates/{file}", f"./{project_name}/{dest}")
 
 
 def create_execute_file(project_name):
