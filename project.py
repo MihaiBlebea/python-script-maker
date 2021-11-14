@@ -47,6 +47,15 @@ def main():
 		help="is ansible required",
 	)
 
+	parser.add_argument(
+		"-w",
+		dest="web",
+		required=False, 
+		default=False,
+		action="store_true",
+		help="is web api required",
+	)
+
 	args = parser.parse_args()
 
 	project_name = args.project
@@ -74,6 +83,7 @@ def main():
 		copy_file(project_name, "ansible/deploy.yaml")
 		copy_file(project_name, "ansible/remove.yaml")
 
+	# copy scrapy files
 	if args.scraper is True:
 		copy_file(project_name, "scrape.py", "src/scrape.py")
 		copy_file(project_name, "spider.py", "src/spider.py")
@@ -81,6 +91,12 @@ def main():
 		os.system(f"cd ./{project_name} && make venv-activate && make venv-install package=scrapy-splash")
 		os.system(f"cd ./{project_name} && make venv-lock")
 
+	if args.web is True:
+		copy_file(project_name, "Dockerfile")
+		copy_file(project_name, ".dockerignore")
+		copy_file(project_name, "client.rest")
+		os.system(f"cd ./{project_name} && make venv-activate && make venv-install package=flask")
+		os.system(f"cd ./{project_name} && make venv-lock")
 
 def create_folder(folder_name):
 	Path(f"./{folder_name}").mkdir(parents=True, exist_ok=True)
