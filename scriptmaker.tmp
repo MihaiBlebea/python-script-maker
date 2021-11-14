@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# ${PWD} will be set by the installer
+
+echo "Running the python script maker"
+eval "__PATH__/project.py \"${@}\""

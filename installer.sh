@@ -2,6 +2,8 @@
 
 INSTALL_FOLDER="script_maker"
 
+SCRIPTMAKER_PATH="${PWD}"
+
 if [[ $* == *-u* ]]; then
 	echo "uninstalling the scriptmaker"
 	rm -rf ${HOME}/.local/bin/scriptmaker
@@ -14,9 +16,7 @@ else
 		git clone https://github.com/MihaiBlebea/python-script-maker "${INSTALL_FOLDER}" && \
 		cd "${INSTALL_FOLDER}"
 	fi
-	cp -f ./scriptmaker ${HOME}/.local/bin/scriptmaker
-	# git clone https://github.com/MihaiBlebea/python-script-maker && \
-	# mv -f ./python-script-maker/ ${HOME}/.local/bin/_scriptmaker/ && \
-	# python3 -m venv ${HOME}/.local/bin/_scriptmaker/virtualenv && \
-	# ln -s ${HOME}/.local/bin/_scriptmaker/execute.sh ${HOME}/.local/bin/scriptmaker
+	sed 's?__PATH__?'`pwd`'?' ./scriptmaker.tmp > scriptmaker && \
+	chmod +x scriptmaker && \
+	mv -f ./scriptmaker ${HOME}/.local/bin/scriptmaker
 fi
