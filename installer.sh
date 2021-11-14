@@ -17,6 +17,6 @@ else
 		cd "${INSTALL_FOLDER}"
 	fi
 	sed 's?__PATH__?'`pwd`'?' ./scriptmaker.tmp > scriptmaker && \
-	chmod +x scriptmaker && \
+	chmod +x scriptmaker
 	mv -f ./scriptmaker ${HOME}/.local/bin/scriptmaker
 fi
