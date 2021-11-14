@@ -95,6 +95,7 @@ def main():
 		copy_file(project_name, "Dockerfile")
 		copy_file(project_name, ".dockerignore")
 		copy_file(project_name, "client.rest")
+		copy_file(project_name, "api.py", "src/api.py")
 		os.system(f"cd ./{project_name} && make venv-activate && make venv-install package=flask")
 		os.system(f"cd ./{project_name} && make venv-lock")
 
